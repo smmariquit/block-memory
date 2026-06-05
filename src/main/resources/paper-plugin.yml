@@ -1,0 +1,6 @@
+name: BlockMemory
+version: '0.1.0'
+main: dev.stimmie.persistentblocks.PersistentBlocks
+description: Saves enchantments, lore, and custom names of blocks when placed!
+author: Stimmie
+api-version: '1.20'
