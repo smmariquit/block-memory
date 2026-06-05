@@ -1,7 +1,7 @@
 plugins {
     id("java")
     id("io.papermc.paperweight.userdev") version "1.7.1"
-    id("xyz.jpenilla.run-paper") version "2.3.0" // Allows testing with "gradlew runServer"
+    id("xyz.jpenilla.run-paper") version "3.0.2" // Allows testing with "gradlew runServer"
 }
 
 group = "dev.stimmie"
