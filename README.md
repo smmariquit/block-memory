@@ -30,3 +30,12 @@ In vanilla Minecraft, placing an item converts its `ItemStack` into a `BlockStat
     *   **Gravity & Entity Interaction:** Cancels `EntityChangeBlockEvent` to prevent Endermen theft and to stop custom sand/anvils from falling and losing their coordinate mapping.
     *   **Physics & Fluids:** Hooks into `BlockDropItemEvent` to securely drop custom items if a block is destroyed by water or if its supporting block is broken (e.g., torches).
 *   **Anti-Farming:** Automatically zeroes out the vanilla experience drop (`setExpToDrop(0)`) when a custom ore is mined, preventing players from infinitely farming XP by placing and mining the same block.
+
+## 📊 Current State of the Code
+- **Tech Stack:** Java/Kotlin
+- **Repository Size:** 18 tracked files
+- **Latest Update:** `eb2a696 chore: add stale issue and PR validators`
+
+
+---
+*☕ If you found this project useful, you can support my work at [kape.stimmie.dev](https://kape.stimmie.dev)!*
