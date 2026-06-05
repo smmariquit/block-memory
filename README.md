@@ -1,20 +1,32 @@
-# PersistentBlocks
+<h1 align="center">BlockMemory</h1>
+<h4 align="center">Stop Losing Custom Items When Placed!</h4>
 
-A lightweight Paper Minecraft plugin that saves custom item data (enchantments, names, lore, and custom NBT) when blocks are placed in the world, and restores the data when the block is broken!
+## 🔗 Important Links
+* **Source Code:** [GitHub Repository](https://github.com/smmariquit/block-memory)
+* **Documentation:** [GitHub Wiki](https://github.com/smmariquit/block-memory/wiki)
+* **Bug Reports:** [Issue Tracker](https://github.com/smmariquit/block-memory/issues)
 
-## Features
-- **Zero Config, Plug and Play:** It just works out of the box.
-- **Native Paper API:** Uses Paper's `serializeAsBytes()` and the `PersistentDataContainer` (PDC) on Chunks.
-- **No External Databases:** Survives restarts and chunk unloading cleanly without bloating an SQLite file.
+## 📖 Overview
+In vanilla Minecraft, placing an item converts its `ItemStack` into a `BlockState`, which strips all custom NBT data. This causes issues for servers that give out custom-named or enchanted blocks as event rewards, as players lose the item data if accidentally placed. 
 
-## How to Build
-This project uses the `paperweight-userdev` Gradle plugin.
-Since it targets Paper 1.20+, ensure you are using **Java 21**.
+**BlockMemory** intercepts this process. It serializes the custom item and stores the byte array in the Chunk's `PersistentDataContainer` (PDC). When the block is broken, it deserializes the bytes and drops the original custom item.
 
-1. Open this folder in IntelliJ IDEA (or your preferred IDE).
-2. Let the IDE import the Gradle project.
-3. Run `gradlew build` or `gradlew reobfJar`.
-4. To test a live server immediately, run `gradlew runServer` (provided by run-paper plugin).
+## ⚙️ Dependencies
+* **Required Server Software:** Paper 1.20 or higher (Folia is supported). *This plugin will NOT work on standard Spigot because it utilizes Paper's modern chunk data APIs.*
+* **Required Java Version:** Java 21
+* **Required Plugins:** None! It works out of the box.
 
-## Why this is built differently
-Instead of creating a massive database to track coordinates, this plugin saves the block's data directly inside the **Chunk** where it was placed using Paper's Persistent Data Container. When the chunk is loaded/unloaded, the data naturally follows it. If the chunk is ever deleted, the data is deleted too—meaning zero data bloat!
+## 📥 How to Install
+1. Download the latest `BlockMemory-[version].jar` from the releases page.
+2. Drop the file into your server's `plugins/` folder.
+3. Restart your server.
+4. That's it! There are no commands, permissions, or configuration files to mess with.
+
+## 🛡️ Technical Features
+*   **No Databases or YAML Storage:** Data is stored natively within the chunk `.mca` files via the Paper API. This guarantees zero database overhead, prevents desyncs during chunk rollbacks, and ensures data is automatically purged if a chunk is deleted or reset.
+*   **Comprehensive Edge-Case Handling:** The plugin is designed to prevent item duplication and orphaned data across vanilla mechanics.
+    *   **Explosions:** Intercepts `EntityExplodeEvent` and `BlockExplodeEvent` to drop the custom item and clean up PDC data.
+    *   **Pistons:** Cancels `BlockPistonExtendEvent` and `BlockPistonRetractEvent` for blocks containing custom PDC data to prevent coordinate desyncs.
+    *   **Gravity & Entity Interaction:** Cancels `EntityChangeBlockEvent` to prevent Endermen theft and to stop custom sand/anvils from falling and losing their coordinate mapping.
+    *   **Physics & Fluids:** Hooks into `BlockDropItemEvent` to securely drop custom items if a block is destroyed by water or if its supporting block is broken (e.g., torches).
+*   **Anti-Farming:** Automatically zeroes out the vanilla experience drop (`setExpToDrop(0)`) when a custom ore is mined, preventing players from infinitely farming XP by placing and mining the same block.
